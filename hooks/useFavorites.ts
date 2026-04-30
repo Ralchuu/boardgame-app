@@ -1,116 +1,82 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useAuth } from '@/hooks/useAuth'
+import { database } from '@/services/firebase'
+import { get, onValue, ref, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 
-const STORAGE_KEY = 'steamFavorites'
-
-let favoritesCache: number[] = []
-let favoritesLoaded = false
-const favoritesSubscribers = new Set<(favorites: number[]) => void>()
-
-function emitFavorites(nextFavorites: number[]) {
-  favoritesCache = nextFavorites
-  favoritesSubscribers.forEach((subscriber) => subscriber(nextFavorites))
-}
-
-function normalizeFavorites(value: unknown): number[] {
-  if (!Array.isArray(value)) {
-    return []
-  }
-
-  return value
-    .map((item) => Number(item))
-    .filter((item) => Number.isFinite(item))
-}
-
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<number[]>(favoritesCache)
-  const [loading, setLoading] = useState(!favoritesLoaded)
+  const [favorites, setFavorites] = useState<number[]>([])
+  const [loading, setLoading] = useState(true)
+  const { user } = useAuth()
 
   useEffect(() => {
+    if (!user) {
+      setFavorites([])
+      setLoading(false)
+      return
+    }
+
     let active = true
+    const favoritesRef = ref(database, `favorites/${user.uid}`)
 
-    const subscriber = (nextFavorites: number[]) => {
-      if (active) {
-        setFavorites(nextFavorites)
-      }
-    }
-
-    favoritesSubscribers.add(subscriber)
-
-    async function load() {
-      if (favoritesLoaded) {
-        if (active) {
-          setFavorites(favoritesCache)
-          setLoading(false)
-        }
-
-        return
-      }
-
-      try {
-        const data = await AsyncStorage.getItem(STORAGE_KEY)
-        if (!active) {
-          return
-        }
-
-        if (data) {
-          emitFavorites(normalizeFavorites(JSON.parse(data)))
-        } else {
-          emitFavorites([])
-        }
-      } catch {
-        if (active) {
-          emitFavorites([])
-        }
-      } finally {
-        if (active) {
-          favoritesLoaded = true
+    const unsubscribe = onValue(
+      favoritesRef,
+      (snapshot) => {
+        if (!active) return
+        try {
+          const data = snapshot.val()
+          setFavorites(Array.isArray(data) ? data : [])
+        } catch (err) {
+          console.error('Error reading favorites:', err)
+          setFavorites([])
+        } finally {
           setLoading(false)
         }
       }
-    }
-
-    load()
+    )
 
     return () => {
       active = false
-      favoritesSubscribers.delete(subscriber)
+      unsubscribe()
     }
-  }, [])
+  }, [user])
 
-  const persistFavorites = async (nextFavorites: number[]) => {
+  const addFavorite = async (gameId: number) => {
+    if (!user) {
+      return
+    }
+
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(nextFavorites))
-    } catch {
-      // Keep local state updated even if persistence fails.
+      const favoritesRef = ref(database, `favorites/${user.uid}`)
+      const snapshot = await get(favoritesRef)
+      let current: number[] = snapshot.val() || []
+      if (!current.includes(gameId)) {
+        current.push(gameId)
+        await set(favoritesRef, current)
+      }
+    } catch (err) {
+      console.error('Error adding favorite:', err)
     }
   }
 
-  const addFavorite = (id: number) => {
-    const currentFavorites = favoritesCache
-
-    if (currentFavorites.includes(id)) {
+  const removeFavorite = async (gameId: number) => {
+    if (!user) {
       return
     }
 
-    const nextFavorites = [...currentFavorites, id]
-    emitFavorites(nextFavorites)
-    void persistFavorites(nextFavorites)
-  }
-
-  const removeFavorite = (id: number) => {
-    const currentFavorites = favoritesCache
-    const nextFavorites = currentFavorites.filter((favoriteId) => favoriteId !== id)
-
-    if (nextFavorites.length === currentFavorites.length) {
-      return
+    try {
+      const favoritesRef = ref(database, `favorites/${user.uid}`)
+      const snapshot = await get(favoritesRef)
+      let current: number[] = snapshot.val() || []
+      const filtered = current.filter((id) => id !== gameId)
+      await set(favoritesRef, filtered.length > 0 ? filtered : null)
+    } catch (err) {
+      console.error('Error removing favorite:', err)
     }
-
-    emitFavorites(nextFavorites)
-    void persistFavorites(nextFavorites)
   }
 
-  const isFavorite = (id: number) => favorites.includes(id)
+  const isFavorite = (gameId: number): boolean => {
+    return favorites.includes(gameId)
+  }
 
   return { favorites, loading, addFavorite, removeFavorite, isFavorite }
 }

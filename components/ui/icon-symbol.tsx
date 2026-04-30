@@ -19,6 +19,7 @@ const MAPPING = {
   'gamecontroller.fill': 'sports-esports',
   'star.fill': 'star',
   sparkles: 'auto-awesome',
+  'person.fill': 'person',
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
