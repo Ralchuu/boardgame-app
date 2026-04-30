@@ -1,6 +1,6 @@
-# Welcome to your Expo app 👋
+# Steam Finder
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) project for discovering Steam games and saving favorites locally.
 
 ## Get started
 
@@ -15,6 +15,14 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
    npx expo start
    ```
+
+3. Optional: run the Steam proxy for web/CORS-friendly development
+
+   ```bash
+   npm run steam-proxy
+   ```
+
+   Then set `EXPO_PUBLIC_STEAM_API_BASE_URL=http://localhost:3001/api/steam` in `.env.local` if you want the app to use the local proxy.
 
 In the output, you'll find options to open the app in a
 
