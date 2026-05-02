@@ -1,3 +1,4 @@
+import { IconSymbol } from '@/components/ui/icon-symbol'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useFavorites } from '@/hooks/useFavorites'
@@ -21,11 +22,61 @@ export default function HomeScreen() {
 
   return (
     <View style={[{ flex: 1, paddingHorizontal: 16, paddingTop: insets.top + 12, gap: 14 }, screenStyles]}>
-      <View style={{ backgroundColor: theme.surface, borderColor: theme.border, borderWidth: 1, borderRadius: 24, padding: 18 }}>
-        <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text }}>Steam Finder</Text>
-        <Text style={{ marginTop: 6, color: theme.mutedText, lineHeight: 20 }}>
-          Etsi pelejä Steamistä, tutki tietoja ja talleta omat suosikit.
-        </Text>
+      <View
+        style={{
+          backgroundColor: theme.surface,
+          borderColor: theme.border,
+          borderWidth: 1,
+          borderRadius: 24,
+          padding: 18,
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        <View
+          style={{
+            position: 'absolute',
+            top: -20,
+            right: -22,
+            width: 120,
+            height: 120,
+            borderRadius: 60,
+            backgroundColor: theme.primarySoft,
+            opacity: 0.55,
+          }}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            bottom: -34,
+            left: -24,
+            width: 92,
+            height: 92,
+            borderRadius: 46,
+            backgroundColor: theme.surfaceAlt,
+            opacity: 0.8,
+          }}
+        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <View
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: 16,
+              backgroundColor: theme.primary,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <IconSymbol size={26} name="gamecontroller.fill" color={theme.background} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text }}>Steam Finder</Text>
+            <Text style={{ marginTop: 6, color: theme.mutedText, lineHeight: 20 }}>
+              Etsi pelejä Steamistä, tutki tietoja ja talleta omat suosikit.
+            </Text>
+          </View>
+        </View>
       </View>
 
       <TextInput
