@@ -2,15 +2,17 @@ import { Colors } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useFavorites } from '@/hooks/useFavorites'
 import { getSteamRecommendations, SteamGameDetails } from '@/services/steamApi'
+import { useRouter } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, Image, RefreshControl, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, Image, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function RecommendationsScreen() {
-  const { favorites } = useFavorites()
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
   const [games, setGames] = useState<SteamGameDetails[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const router = useRouter()
   const colorScheme = useColorScheme() ?? 'light'
   const theme = Colors[colorScheme]
   const insets = useSafeAreaInsets()
@@ -82,25 +84,48 @@ export default function RecommendationsScreen() {
             En löytänyt vielä riittävästi samankaltaisia pelejä. Kokeile lisätä lisää suosikkeja.
           </Text>
         }
-        renderItem={({ item }) => (
-          <View style={{ marginBottom: 12, padding: 14, borderWidth: 1, borderColor: theme.border, borderRadius: 18, backgroundColor: theme.surface }}>
-            {item.header_image ? (
-              <Image source={{ uri: item.header_image }} style={{ height: 100, borderRadius: 12, backgroundColor: theme.surfaceAlt }} />
-            ) : null}
-            <Text style={{ marginTop: 8, fontWeight: '800', color: theme.text }}>{item.name}</Text>
-            {item.release_date?.date ? (
-              <Text style={{ marginTop: 4, color: theme.mutedText }}>{item.release_date.date}</Text>
-            ) : null}
-            {item.genres?.length ? (
-              <Text style={{ marginTop: 4, color: theme.mutedText }}>
-                {item.genres.map((genre) => genre.description).join(' • ')}
-              </Text>
-            ) : null}
-            {item.short_description ? (
-              <Text style={{ marginTop: 6, color: theme.mutedText }}>{item.short_description}</Text>
-            ) : null}
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const fav = isFavorite(item.steam_appid)
+
+          return (
+            <Pressable onPress={() => router.push({ pathname: '/game', params: { appid: String(item.steam_appid) } })}>
+              <View style={{ marginBottom: 12, padding: 14, borderWidth: 1, borderColor: theme.border, borderRadius: 18, backgroundColor: theme.surface }}>
+                {item.header_image ? (
+                  <Image source={{ uri: item.header_image }} style={{ height: 100, borderRadius: 12, backgroundColor: theme.surfaceAlt }} />
+                ) : null}
+                <Text style={{ marginTop: 8, fontWeight: '800', color: theme.text }}>{item.name}</Text>
+                {item.release_date?.date ? (
+                  <Text style={{ marginTop: 4, color: theme.mutedText }}>{item.release_date.date}</Text>
+                ) : null}
+                {item.genres?.length ? (
+                  <Text style={{ marginTop: 4, color: theme.mutedText }}>
+                    {item.genres.map((genre) => genre.description).join(' • ')}
+                  </Text>
+                ) : null}
+                {item.short_description ? (
+                  <Text style={{ marginTop: 6, color: theme.mutedText }}>{item.short_description}</Text>
+                ) : null}
+
+                <Pressable
+                  onPress={(e: any) => {
+                    e?.stopPropagation?.()
+                    fav ? removeFavorite(item.steam_appid) : addFavorite(item.steam_appid)
+                  }}
+                  style={{
+                    marginTop: 10,
+                    paddingVertical: 10,
+                    borderRadius: 10,
+                    backgroundColor: fav ? theme.dangerSoft : theme.primarySoft,
+                  }}
+                >
+                  <Text style={{ textAlign: 'center', fontWeight: '700', color: fav ? theme.danger : theme.primaryText }}>
+                    {fav ? 'Remove from favorites' : 'Add to favorites'}
+                  </Text>
+                </Pressable>
+              </View>
+            </Pressable>
+          )
+        }}
       />
     </View>
   )

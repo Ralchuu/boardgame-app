@@ -1,58 +1,39 @@
 # Steam Finder
 
-This is an [Expo](https://expo.dev) project for discovering Steam games and saving favorites locally.
+Steam Finder is an Expo/React Native mobile app where users can:
 
-## Get started
+- search Steam games
+- open a detailed game view
+- add or remove favorites
+- get recommendations based on favorite games
+- use the app with Firebase authentication
 
-1. Install dependencies
+This app was built as a final project for Haaga-Helia's mobile programming course.
 
-   ```bash
-   npm install
-   ```
+## Main Features
 
-2. Start the app
+- Steam game search using the Steam Store API
+- Game detail page (name, image, description, genre, price, release date, developer/publisher)
+- Favorites stored in Firebase Realtime Database
+- Recommendation view based on favorites
+- Theme support (light/dark)
+- Consistent navigation to the detail page from all tabs
 
-   ```bash
-   npx expo start
-   ```
+## Technologies
 
-3. Optional: run the Steam proxy for web/CORS-friendly development
+- Expo + React Native
+- TypeScript
+- Expo Router
+- Firebase Authentication
+- Firebase Realtime Database
+- Steam Store API
+- react-native-safe-area-context
 
-   ```bash
-   npm run steam-proxy
-   ```
+## Current Status
 
-   Then set `EXPO_PUBLIC_STEAM_API_BASE_URL=http://localhost:3001/api/steam` in `.env.local` if you want the app to use the local proxy.
+Implemented:
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- search + debouncing
+- game detail page and back navigation
+- favorites and recommendations
+- theme-aware UI and dark mode transition fixes

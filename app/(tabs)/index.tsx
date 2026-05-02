@@ -3,6 +3,7 @@ import { Colors } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useGames } from '@/hooks/useGames'
+import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Image, Pressable, Text, TextInput, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -11,6 +12,7 @@ export default function HomeScreen() {
   const [query, setQuery] = useState('')
   const { games, loading, error } = useGames(query)
   const { addFavorite, removeFavorite, isFavorite } = useFavorites()
+  const router = useRouter()
   const colorScheme = useColorScheme() ?? 'light'
   const theme = Colors[colorScheme]
   const insets = useSafeAreaInsets()
@@ -112,48 +114,53 @@ export default function HomeScreen() {
           const fav = isFavorite(item.appid)
 
           return (
-            <View
-              style={{
-                padding: 14,
-                borderWidth: 1,
-                borderColor: theme.border,
-                borderRadius: 18,
-                backgroundColor: theme.surface,
-              }}
-            >
-              <View style={{ flexDirection: 'row', gap: 12 }}>
-                {item.tiny_image ? (
-                  <Image
-                    source={{ uri: item.tiny_image }}
-                    style={{
-                      width: 96,
-                      height: 54,
-                      borderRadius: 12,
-                      backgroundColor: theme.surfaceAlt,
-                    }}
-                  />
-                ) : null}
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: theme.text }}>{item.name}</Text>
-                  {item.release_date ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date}</Text> : null}
-                  {item.price ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.price}</Text> : null}
-                </View>
-              </View>
-
-              <Pressable
-                onPress={() => (fav ? removeFavorite(item.appid) : addFavorite(item.appid))}
+            <Pressable onPress={() => router.push({ pathname: '/game', params: { appid: String(item.appid) } })}>
+              <View
                 style={{
-                  marginTop: 10,
-                  paddingVertical: 10,
-                  borderRadius: 10,
-                  backgroundColor: fav ? theme.dangerSoft : theme.primarySoft,
+                  padding: 14,
+                  borderWidth: 1,
+                  borderColor: theme.border,
+                  borderRadius: 18,
+                  backgroundColor: theme.surface,
                 }}
               >
-                <Text style={{ textAlign: 'center', fontWeight: '700', color: fav ? theme.danger : theme.primaryText }}>
-                  {fav ? 'Remove from favorites' : 'Add to favorites'}
-                </Text>
-              </Pressable>
-            </View>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  {item.tiny_image ? (
+                    <Image
+                      source={{ uri: item.tiny_image }}
+                      style={{
+                        width: 96,
+                        height: 54,
+                        borderRadius: 12,
+                        backgroundColor: theme.surfaceAlt,
+                      }}
+                    />
+                  ) : null}
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: theme.text }}>{item.name}</Text>
+                    {item.release_date ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date}</Text> : null}
+                    {item.price ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.price}</Text> : null}
+                  </View>
+                </View>
+
+                <Pressable
+                  onPress={(e: any) => {
+                    e?.stopPropagation?.()
+                    fav ? removeFavorite(item.appid) : addFavorite(item.appid)
+                  }}
+                  style={{
+                    marginTop: 10,
+                    paddingVertical: 10,
+                    borderRadius: 10,
+                    backgroundColor: fav ? theme.dangerSoft : theme.primarySoft,
+                  }}
+                >
+                  <Text style={{ textAlign: 'center', fontWeight: '700', color: fav ? theme.danger : theme.primaryText }}>
+                    {fav ? 'Remove from favorites' : 'Add to favorites'}
+                  </Text>
+                </Pressable>
+              </View>
+            </Pressable>
           )
         }}
       />

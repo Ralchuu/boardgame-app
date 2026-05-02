@@ -80,3 +80,36 @@ Hakusivun ensimmäinen versio oli toimiva mutta visuaalisesti vähän orpo.
 
 ## Yhteenveto
 
+### 6. Pelin yksityisnäkymä ja navigoinnin yhtenäistäminen
+
+Toteutin sovellukseen pelin yksityisnäkymän, johon siirrytään pelikortista. Yksityisnäkymässä näytetään pelin tärkeät tiedot (nimi, kuva, julkaisu, hinta, genret, kehittäjä/julkaisija, kuvaus) sekä suosikkinappi.
+
+Lisäksi yhtenäistin käyttäjävirran niin, että pelikortin painallus avaa detaljisivun samalla tavalla kaikissa päävälilehdissä (haku, pelit, suosikit ja suositukset). Tavoite oli poistaa epäjohdonmukaisuus, jossa osa korteista teki eri asian kuin toiset.
+
+Myös takaisin-painike viimeisteltiin teeman mukaiseksi, jotta sivu näyttää samalta kuin muu sovellus.
+
+### 7. Siirtymien ja dark moden viimeistely
+
+Yksi isoin käytettävyysongelma oli valkoinen välähdys siirtymissä, erityisesti detail-sivulta takaisin päin. Korjasin tämän sovittamalla stackin taustat, tab-skenen taustat, status barin tyylin sekä natiivin ikkunataustan samaan teemaan.
+
+Tämän jälkeen navigointi tuntui paljon tasaisemmalta eikä dark moden keskelle tullut enää valkoisia välähdyksiä.
+
+### 8. TypeScript-ympäristön siivous
+
+Lopussa vastaan tuli tilanne, jossa editori näytti virheitä `node_modules`-kansion Expo-pakettien tsconfigeista. Ne eivät olleet varsinaisia sovelluksen koodivirheitä, mutta häiritsivät kehitystä.
+
+Ratkaisin tämän käyttämällä workspace-kohtaista TypeScript-versiota ja rajaamalla `node_modules`- sekä `.expo`-kansiot tyypitysskoopin ulkopuolelle.
+
+## Mitä opin tämän projektin aikana
+
+- Expo Routerin kanssa kannattaa joskus valita yksinkertaisempi reititysratkaisu, jos se tekee navigoinnista varmemman.
+- Sisäkkäisissä painikkeissa `stopPropagation` on tärkeä, jotta kortin painallus ja napin painallus eivät laukea yhtä aikaa.
+- Mobiilissa käyttöliittymän viimeistely on paljon muutakin kuin komponentit: myös status bar, safe area, scene-taustat ja transition-animaatiot vaikuttavat lopputulokseen.
+- Kaikki TypeScript-virheet eivät ole oman koodin virheitä, vaan joskus kyse on editorin konfiguraatiosta.
+
+## Lopullinen yhteenveto
+
+Projektin aikana sovellus kehittyi perustoimivasta versiosta huomattavasti valmiimmaksi kokonaisuudeksi. Isoimmat parannukset tulivat käyttöliittymän yhtenäistämisestä, navigoinnin selkeyttämisestä ja siitä, että ongelmia korjattiin käytännön testauksen perusteella laiteympäristössä.
+
+Oma fiilis lopputuloksesta on hyvä: sovellus on nyt teknisesti vakaampi, visuaalisesti yhtenäisempi ja käyttäjän näkökulmasta loogisempi käyttää. Samalla opin paljon siitä, miten pienetkin mobiili-UI:n yksityiskohdat vaikuttavat siihen, näyttääkö sovellus keskeneräiseltä vai viimeistellyltä.
+

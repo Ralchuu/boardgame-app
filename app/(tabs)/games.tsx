@@ -2,6 +2,7 @@ import { Colors } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useFavorites } from '@/hooks/useFavorites'
 import { getSteamGameDetails, searchSteamGames, SteamGameDetails } from '@/services/steamApi'
+import { useRouter } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -66,6 +67,7 @@ export default function GamesScreen() {
   const [refreshing, setRefreshing] = useState(false)
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null)
   const { addFavorite, removeFavorite, isFavorite } = useFavorites()
+  const router = useRouter()
   const colorScheme = useColorScheme() ?? 'light'
   const theme = Colors[colorScheme]
   const insets = useSafeAreaInsets()
@@ -214,44 +216,45 @@ export default function GamesScreen() {
         const fav = isFavorite(item.steam_appid)
 
         return (
-          <View style={{ marginBottom: 16, padding: 14, borderWidth: 1, borderColor: theme.border, borderRadius: 18, backgroundColor: theme.surface }}>
-            {item.header_image && (
-              <Image
-                source={{ uri: item.header_image }}
-                style={{ height: 100, width: '100%', borderRadius: 12, backgroundColor: theme.surfaceAlt }}
-                resizeMode="cover"
-              />
-            )}
+          <Pressable onPress={() => router.push({ pathname: '/game', params: { appid: String(item.steam_appid) } })} style={{ marginBottom: 16 }}>
+            <View style={{ padding: 14, borderWidth: 1, borderColor: theme.border, borderRadius: 18, backgroundColor: theme.surface }}>
+              {item.header_image && (
+                <Image
+                  source={{ uri: item.header_image }}
+                  style={{ height: 100, width: '100%', borderRadius: 12, backgroundColor: theme.surfaceAlt }}
+                  resizeMode="cover"
+                />
+              )}
 
-            <Text style={{ color: theme.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>
-              {item.name}
-            </Text>
-            {item.release_date?.date ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date.date}</Text> : null}
-            {item.price_overview?.final_formatted ? (
-              <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.price_overview.final_formatted}</Text>
-            ) : null}
-            {item.short_description ? (
-              <Text style={{ color: theme.mutedText, marginTop: 8, lineHeight: 20 }}>{item.short_description}</Text>
-            ) : null}
-
-            <Pressable
-              onPress={() =>
-                fav
-                  ? removeFavorite(item.steam_appid)
-                  : addFavorite(item.steam_appid)
-              }
-              style={{
-                marginTop: 8,
-                padding: 10,
-                backgroundColor: fav ? theme.dangerSoft : theme.primarySoft,
-                borderRadius: 8,
-              }}
-            >
-              <Text style={{ color: fav ? theme.danger : theme.primaryText, textAlign: 'center', fontWeight: '700' }}>
-                {fav ? 'Remove from favorites' : 'Favorite'}
+              <Text style={{ color: theme.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>
+                {item.name}
               </Text>
-            </Pressable>
-          </View>
+              {item.release_date?.date ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date.date}</Text> : null}
+              {item.price_overview?.final_formatted ? (
+                <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.price_overview.final_formatted}</Text>
+              ) : null}
+              {item.short_description ? (
+                <Text style={{ color: theme.mutedText, marginTop: 8, lineHeight: 20 }}>{item.short_description}</Text>
+              ) : null}
+
+              <Pressable
+                onPress={(e: any) => {
+                  e?.stopPropagation?.()
+                  fav ? removeFavorite(item.steam_appid) : addFavorite(item.steam_appid)
+                }}
+                style={{
+                  marginTop: 8,
+                  padding: 10,
+                  backgroundColor: fav ? theme.dangerSoft : theme.primarySoft,
+                  borderRadius: 8,
+                }}
+              >
+                <Text style={{ color: fav ? theme.danger : theme.primaryText, textAlign: 'center', fontWeight: '700' }}>
+                  {fav ? 'Remove from favorites' : 'Favorite'}
+                </Text>
+              </Pressable>
+            </View>
+          </Pressable>
         )
       }}
     />

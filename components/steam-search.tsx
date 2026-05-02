@@ -1,5 +1,6 @@
 import { useFavorites } from '@/hooks/useFavorites'
 import { useGames } from '@/hooks/useGames'
+import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
@@ -7,6 +8,7 @@ export default function SteamSearch() {
   const [query, setQuery] = useState('')
   const { games, loading, error } = useGames(query)
   const { addFavorite, removeFavorite, isFavorite } = useFavorites()
+  const router = useRouter()
 
   return (
     <View style={styles.container}>
@@ -36,17 +38,15 @@ export default function SteamSearch() {
         const fav = isFavorite(item.appid)
 
         return (
-          <Pressable
-            key={item.appid}
-            style={styles.card}
-            onPress={() => (fav ? removeFavorite(item.appid) : addFavorite(item.appid))}
-          >
+          <Pressable key={item.appid} style={styles.card} onPress={() => router.push(`/game?appid=${item.appid}` as any)}>
             {item.tiny_image ? <Image source={{ uri: item.tiny_image }} style={styles.thumbnail} /> : null}
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>{item.name}</Text>
               {item.release_date ? <Text style={styles.cardMeta}>{item.release_date}</Text> : null}
               {item.price ? <Text style={styles.cardMeta}>{item.price}</Text> : null}
-              <Text style={styles.cardAction}>{fav ? 'Poista suosikeista' : 'Lisää suosikkeihin'}</Text>
+              <Pressable onPress={(e: any) => { e?.stopPropagation?.(); fav ? removeFavorite(item.appid) : addFavorite(item.appid) }}>
+                <Text style={styles.cardAction}>{fav ? 'Poista suosikeista' : 'Lisää suosikkeihin'}</Text>
+              </Pressable>
             </View>
           </Pressable>
         )
