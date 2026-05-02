@@ -4,6 +4,7 @@ import { useFavorites } from '@/hooks/useFavorites'
 import { useGames } from '@/hooks/useGames'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Image, Pressable, Text, TextInput, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
   const [query, setQuery] = useState('')
@@ -11,6 +12,7 @@ export default function HomeScreen() {
   const { addFavorite, removeFavorite, isFavorite } = useFavorites()
   const colorScheme = useColorScheme() ?? 'light'
   const theme = Colors[colorScheme]
+  const insets = useSafeAreaInsets()
 
   const screenStyles = {
     backgroundColor: theme.background,
@@ -18,37 +20,41 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={[{ flex: 1, padding: 16 }, screenStyles]}>
-      <Text style={{ fontSize: 28, fontWeight: 'bold', color: theme.text }}>Steam Finder</Text>
-      <Text style={{ marginTop: 6, color: theme.icon }}>Etsi pelejä Steamistä ja talleta omat suosikit.</Text>
+    <View style={[{ flex: 1, paddingHorizontal: 16, paddingTop: insets.top + 12, gap: 14 }, screenStyles]}>
+      <View style={{ backgroundColor: theme.surface, borderColor: theme.border, borderWidth: 1, borderRadius: 24, padding: 18 }}>
+        <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text }}>Steam Finder</Text>
+        <Text style={{ marginTop: 6, color: theme.mutedText, lineHeight: 20 }}>
+          Etsi pelejä Steamistä, tutki tietoja ja talleta omat suosikit.
+        </Text>
+      </View>
 
       <TextInput
         value={query}
         onChangeText={setQuery}
         placeholder="Search Steam games..."
-        placeholderTextColor={colorScheme === 'dark' ? '#9BA1A6' : '#888'}
+        placeholderTextColor={theme.mutedText}
         selectionColor={theme.tint}
         style={{
           borderWidth: 1,
-          borderColor: colorScheme === 'dark' ? '#3A3F42' : '#DDD',
+          borderColor: theme.border,
           color: theme.text,
-          backgroundColor: colorScheme === 'dark' ? '#1E2124' : '#FFF',
-          marginVertical: 12,
-          padding: 12,
-          borderRadius: 12,
+          backgroundColor: theme.surface,
+          marginBottom: 4,
+          padding: 14,
+          borderRadius: 16,
         }}
       />
 
-      {loading && <ActivityIndicator />}
-      {error ? <Text style={{ color: '#B42318' }}>{error}</Text> : null}
+      {loading && <ActivityIndicator color={theme.primary} />}
+      {error ? <Text style={{ color: theme.danger }}>{error}</Text> : null}
 
       <FlatList
         data={games}
         keyExtractor={(item) => item.appid.toString()}
-        contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 24, gap: 12 }}
         ListEmptyComponent={
           !loading && !query.trim() ? (
-            <Text style={{ color: theme.icon }}>Kirjoita nimi ja hae esimerkiksi Hades tai Portal 2.</Text>
+            <Text style={{ color: theme.mutedText }}>Kirjoita nimi ja hae esimerkiksi Hades tai Portal 2.</Text>
           ) : null
         }
         renderItem={({ item }) => {
@@ -57,12 +63,11 @@ export default function HomeScreen() {
           return (
             <View
               style={{
-                padding: 12,
+                padding: 14,
                 borderWidth: 1,
-                borderColor: colorScheme === 'dark' ? '#3A3F42' : '#E5E7EB',
-                borderRadius: 14,
-                marginBottom: 10,
-                backgroundColor: colorScheme === 'dark' ? '#1E2124' : '#fff',
+                borderColor: theme.border,
+                borderRadius: 18,
+                backgroundColor: theme.surface,
               }}
             >
               <View style={{ flexDirection: 'row', gap: 12 }}>
@@ -72,15 +77,15 @@ export default function HomeScreen() {
                     style={{
                       width: 96,
                       height: 54,
-                      borderRadius: 10,
-                      backgroundColor: colorScheme === 'dark' ? '#2A2E31' : '#E5E7EB',
+                      borderRadius: 12,
+                      backgroundColor: theme.surfaceAlt,
                     }}
                   />
                 ) : null}
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: theme.text }}>{item.name}</Text>
-                  {item.release_date ? <Text style={{ color: theme.icon, marginTop: 4 }}>{item.release_date}</Text> : null}
-                  {item.price ? <Text style={{ color: theme.icon, marginTop: 4 }}>{item.price}</Text> : null}
+                  {item.release_date ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date}</Text> : null}
+                  {item.price ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.price}</Text> : null}
                 </View>
               </View>
 
@@ -90,10 +95,10 @@ export default function HomeScreen() {
                   marginTop: 10,
                   paddingVertical: 10,
                   borderRadius: 10,
-                  backgroundColor: fav ? '#FDECEC' : '#E8F0FF',
+                  backgroundColor: fav ? theme.dangerSoft : theme.primarySoft,
                 }}
               >
-                <Text style={{ textAlign: 'center', fontWeight: '700', color: fav ? '#B42318' : '#174AE5' }}>
+                <Text style={{ textAlign: 'center', fontWeight: '700', color: fav ? theme.danger : theme.primaryText }}>
                   {fav ? 'Remove from favorites' : 'Add to favorites'}
                 </Text>
               </Pressable>

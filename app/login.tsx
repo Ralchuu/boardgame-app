@@ -1,3 +1,5 @@
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useAuth } from '@/hooks/useAuth'
 import { router } from 'expo-router'
 import { useCallback, useState } from 'react'
@@ -7,6 +9,8 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { login, loading, error, clearError } = useAuth()
+  const colorScheme = useColorScheme() ?? 'light'
+  const theme = Colors[colorScheme]
 
   const handleLogin = useCallback(async () => {
     try {
@@ -19,82 +23,94 @@ export default function LoginScreen() {
   }, [email, password, login, clearError])
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white', paddingHorizontal: 20, justifyContent: 'center' }}>
-      <Text style={{ fontSize: 28, fontWeight: 'bold', color: 'black', marginBottom: 30, textAlign: 'center' }}>
-        Steam Games
-      </Text>
-
-      {error && (
-        <View style={{ backgroundColor: '#FEE2E2', padding: 12, borderRadius: 8, marginBottom: 16 }}>
-          <Text style={{ color: '#DC2626', fontSize: 14 }}>{error}</Text>
-        </View>
-      )}
-
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor="#999"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        editable={!loading}
+    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: 20, justifyContent: 'center' }}>
+      <View
         style={{
+          backgroundColor: theme.surface,
+          borderColor: theme.border,
           borderWidth: 1,
-          borderColor: '#E5E7EB',
-          borderRadius: 8,
-          padding: 12,
-          fontSize: 16,
-          marginBottom: 12,
-          color: 'black',
-        }}
-      />
-
-      <TextInput
-        placeholder="Password"
-        placeholderTextColor="#999"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        editable={!loading}
-        style={{
-          borderWidth: 1,
-          borderColor: '#E5E7EB',
-          borderRadius: 8,
-          padding: 12,
-          fontSize: 16,
-          marginBottom: 20,
-          color: 'black',
-        }}
-      />
-
-      <Pressable
-        onPress={handleLogin}
-        disabled={loading || !email || !password}
-        style={{
-          backgroundColor: '#007AFF',
-          padding: 14,
-          borderRadius: 8,
-          marginBottom: 16,
-          opacity: loading || !email || !password ? 0.6 : 1,
+          borderRadius: 24,
+          padding: 20,
         }}
       >
-        {loading ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text style={{ color: 'white', fontSize: 16, fontWeight: '600', textAlign: 'center' }}>
-            Login
-          </Text>
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={() => router.push('/register')}
-        disabled={loading}
-      >
-        <Text style={{ textAlign: 'center', color: '#007AFF', fontSize: 14 }}>
-          Don't have an account? <Text style={{ fontWeight: '600' }}>Sign up</Text>
+        <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text, marginBottom: 8, textAlign: 'center' }}>
+          Steam Games
         </Text>
-      </Pressable>
+        <Text style={{ textAlign: 'center', color: theme.mutedText, marginBottom: 24, lineHeight: 20 }}>
+          Log in to sync favorites and get personalized recommendations.
+        </Text>
+
+        {error && (
+          <View style={{ backgroundColor: theme.dangerSoft, padding: 12, borderRadius: 12, marginBottom: 16 }}>
+            <Text style={{ color: theme.danger, fontSize: 14 }}>{error}</Text>
+          </View>
+        )}
+
+        <TextInput
+          placeholder="Email"
+          placeholderTextColor={theme.mutedText}
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          editable={!loading}
+          style={{
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 14,
+            padding: 14,
+            fontSize: 16,
+            marginBottom: 12,
+            color: theme.text,
+            backgroundColor: theme.background,
+          }}
+        />
+
+        <TextInput
+          placeholder="Password"
+          placeholderTextColor={theme.mutedText}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          editable={!loading}
+          style={{
+            borderWidth: 1,
+            borderColor: theme.border,
+            borderRadius: 14,
+            padding: 14,
+            fontSize: 16,
+            marginBottom: 20,
+            color: theme.text,
+            backgroundColor: theme.background,
+          }}
+        />
+
+        <Pressable
+          onPress={handleLogin}
+          disabled={loading || !email || !password}
+          style={{
+            backgroundColor: theme.primary,
+            padding: 14,
+            borderRadius: 14,
+            marginBottom: 16,
+            opacity: loading || !email || !password ? 0.6 : 1,
+          }}
+        >
+          {loading ? (
+            <ActivityIndicator color={theme.background} />
+          ) : (
+            <Text style={{ color: theme.background, fontSize: 16, fontWeight: '700', textAlign: 'center' }}>
+              Login
+            </Text>
+          )}
+        </Pressable>
+
+        <Pressable onPress={() => router.push('/register')} disabled={loading}>
+          <Text style={{ textAlign: 'center', color: theme.primary, fontSize: 14 }}>
+            Don't have an account? <Text style={{ fontWeight: '700' }}>Sign up</Text>
+          </Text>
+        </Pressable>
+      </View>
     </View>
   )
 }

@@ -1,7 +1,10 @@
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useFavorites } from '@/hooks/useFavorites'
 import { getSteamGameDetails, searchSteamGames, SteamGameDetails } from '@/services/steamApi'
 import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const genrePool = [
   'action',
@@ -63,6 +66,9 @@ export default function GamesScreen() {
   const [refreshing, setRefreshing] = useState(false)
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null)
   const { addFavorite, removeFavorite, isFavorite } = useFavorites()
+  const colorScheme = useColorScheme() ?? 'light'
+  const theme = Colors[colorScheme]
+  const insets = useSafeAreaInsets()
 
   const loadGames = useCallback(async (genre: string | null = selectedGenre) => {
     let queries: string[]
@@ -149,23 +155,23 @@ export default function GamesScreen() {
 
   if (loading && games.length === 0) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
-        <ActivityIndicator />
-        <Text style={{ marginTop: 10, color: 'black' }}>Loading Steam games...</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }}>
+        <ActivityIndicator color={theme.primary} />
+        <Text style={{ marginTop: 10, color: theme.mutedText }}>Loading Steam games...</Text>
       </View>
     )
   }
 
   return (
     <FlatList
-      style={{ flex: 1, backgroundColor: 'white' }}
-      contentContainerStyle={{ padding: 10 }}
+      style={{ flex: 1, backgroundColor: theme.background }}
+      contentContainerStyle={{ paddingHorizontal: 12, paddingTop: insets.top + 12, paddingBottom: insets.bottom + 24 }}
       data={games}
       keyExtractor={(item) => item.steam_appid.toString()}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
       ListHeaderComponent={
-        <View style={{ marginBottom: 16 }}>
-          <Text style={{ color: 'black', fontSize: 16, fontWeight: '600', marginBottom: 8 }}>Select Genre:</Text>
+        <View style={{ marginBottom: 16, backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border, borderRadius: 20, padding: 14 }}>
+          <Text style={{ color: theme.text, fontSize: 16, fontWeight: '700', marginBottom: 10 }}>Select Genre</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }}>
             <Pressable
               onPress={() => handleGenreSelect(null)}
@@ -174,10 +180,10 @@ export default function GamesScreen() {
                 paddingVertical: 8,
                 marginRight: 8,
                 borderRadius: 20,
-                backgroundColor: selectedGenre === null ? '#007AFF' : '#E5E7EB',
+                backgroundColor: selectedGenre === null ? theme.primary : theme.surfaceAlt,
               }}
             >
-              <Text style={{ color: selectedGenre === null ? 'white' : 'black', fontWeight: '600' }}>
+              <Text style={{ color: selectedGenre === null ? theme.background : theme.text, fontWeight: '700' }}>
                 All
               </Text>
             </Pressable>
@@ -190,10 +196,10 @@ export default function GamesScreen() {
                   paddingVertical: 8,
                   marginRight: 8,
                   borderRadius: 20,
-                  backgroundColor: selectedGenre === genre ? '#007AFF' : '#E5E7EB',
+                  backgroundColor: selectedGenre === genre ? theme.primary : theme.surfaceAlt,
                 }}
               >
-                <Text style={{ color: selectedGenre === genre ? 'white' : 'black', fontWeight: '600' }}>
+                <Text style={{ color: selectedGenre === genre ? theme.background : theme.text, fontWeight: '700' }}>
                   {genre.charAt(0).toUpperCase() + genre.slice(1)}
                 </Text>
               </Pressable>
@@ -202,30 +208,30 @@ export default function GamesScreen() {
         </View>
       }
       ListEmptyComponent={
-        <Text style={{ color: 'black' }}>Pull down to load a new set of Steam games</Text>
+        <Text style={{ color: theme.mutedText }}>Pull down to load a new set of Steam games</Text>
       }
       renderItem={({ item }) => {
         const fav = isFavorite(item.steam_appid)
 
         return (
-          <View style={{ marginBottom: 20, padding: 12, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 14 }}>
+          <View style={{ marginBottom: 16, padding: 14, borderWidth: 1, borderColor: theme.border, borderRadius: 18, backgroundColor: theme.surface }}>
             {item.header_image && (
               <Image
                 source={{ uri: item.header_image }}
-                style={{ height: 100, width: '100%', borderRadius: 8 }}
+                style={{ height: 100, width: '100%', borderRadius: 12, backgroundColor: theme.surfaceAlt }}
                 resizeMode="cover"
               />
             )}
 
-            <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold', marginTop: 8 }}>
+            <Text style={{ color: theme.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>
               {item.name}
             </Text>
-            {item.release_date?.date ? <Text style={{ color: '#666', marginTop: 4 }}>{item.release_date.date}</Text> : null}
+            {item.release_date?.date ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date.date}</Text> : null}
             {item.price_overview?.final_formatted ? (
-              <Text style={{ color: '#666', marginTop: 4 }}>{item.price_overview.final_formatted}</Text>
+              <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.price_overview.final_formatted}</Text>
             ) : null}
             {item.short_description ? (
-              <Text style={{ color: '#444', marginTop: 8, lineHeight: 20 }}>{item.short_description}</Text>
+              <Text style={{ color: theme.mutedText, marginTop: 8, lineHeight: 20 }}>{item.short_description}</Text>
             ) : null}
 
             <Pressable
@@ -237,11 +243,11 @@ export default function GamesScreen() {
               style={{
                 marginTop: 8,
                 padding: 10,
-                backgroundColor: fav ? '#FDECEC' : '#ddd',
+                backgroundColor: fav ? theme.dangerSoft : theme.primarySoft,
                 borderRadius: 8,
               }}
             >
-              <Text style={{ color: fav ? '#B42318' : 'black', textAlign: 'center' }}>
+              <Text style={{ color: fav ? theme.danger : theme.primaryText, textAlign: 'center', fontWeight: '700' }}>
                 {fav ? 'Remove from favorites' : 'Favorite'}
               </Text>
             </Pressable>

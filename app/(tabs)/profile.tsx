@@ -1,11 +1,17 @@
+import { Colors } from '@/constants/theme'
+import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useAuth } from '@/hooks/useAuth'
 import { router } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function ProfileScreen() {
   const { user, logout, loading } = useAuth()
   const [loggingOut, setLoggingOut] = useState(false)
+  const colorScheme = useColorScheme() ?? 'light'
+  const theme = Colors[colorScheme]
+  const insets = useSafeAreaInsets()
 
   const handleLogout = useCallback(async () => {
     try {
@@ -21,48 +27,48 @@ export default function ProfileScreen() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
-        <ActivityIndicator size="large" color="#007AFF" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }}>
+        <ActivityIndicator size="large" color={theme.primary} />
       </View>
     )
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white', paddingHorizontal: 20 }}>
+    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: 20, paddingTop: insets.top + 12 }}>
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <View style={{ marginBottom: 30, alignItems: 'center' }}>
+        <View style={{ marginBottom: 30, alignItems: 'center', backgroundColor: theme.surface, borderColor: theme.border, borderWidth: 1, borderRadius: 24, padding: 20 }}>
           <View
             style={{
               width: 80,
               height: 80,
               borderRadius: 40,
-              backgroundColor: '#007AFF',
+              backgroundColor: theme.primary,
               justifyContent: 'center',
               alignItems: 'center',
               marginBottom: 16,
             }}
           >
-            <Text style={{ fontSize: 40, color: 'white' }}>👤</Text>
+            <Text style={{ fontSize: 40, color: theme.background }}>👤</Text>
           </View>
 
-          <Text style={{ fontSize: 18, fontWeight: '600', color: 'black', marginBottom: 8 }}>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: theme.text, marginBottom: 8 }}>
             {user?.email}
           </Text>
 
           {user?.metadata?.creationTime && (
-            <Text style={{ fontSize: 14, color: '#666' }}>
+            <Text style={{ fontSize: 14, color: theme.mutedText }}>
               Member since {new Date(user.metadata.creationTime).toLocaleDateString()}
             </Text>
           )}
         </View>
 
-        <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontSize: 16, fontWeight: '600', color: 'black', marginBottom: 12 }}>
+        <View style={{ marginBottom: 20, backgroundColor: theme.surface, borderColor: theme.border, borderWidth: 1, borderRadius: 20, padding: 16 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: theme.text, marginBottom: 12 }}>
             Account Stats
           </Text>
-          <View style={{ backgroundColor: '#F3F4F6', padding: 16, borderRadius: 8, marginBottom: 8 }}>
-            <Text style={{ color: '#666', marginBottom: 4 }}>User ID</Text>
-            <Text style={{ color: 'black', fontSize: 14, fontWeight: '500' }}>{user?.uid}</Text>
+          <View style={{ backgroundColor: theme.surfaceAlt, padding: 16, borderRadius: 14, marginBottom: 8 }}>
+            <Text style={{ color: theme.mutedText, marginBottom: 4 }}>User ID</Text>
+            <Text style={{ color: theme.text, fontSize: 14, fontWeight: '600' }}>{user?.uid}</Text>
           </View>
         </View>
       </View>
@@ -71,17 +77,17 @@ export default function ProfileScreen() {
         onPress={handleLogout}
         disabled={loggingOut || loading}
         style={{
-          backgroundColor: '#EF4444',
+          backgroundColor: theme.danger,
           padding: 14,
-          borderRadius: 8,
-          marginBottom: 20,
+          borderRadius: 14,
+          marginBottom: insets.bottom + 20,
           opacity: loggingOut || loading ? 0.6 : 1,
         }}
       >
         {loggingOut ? (
-          <ActivityIndicator color="white" />
+          <ActivityIndicator color={theme.background} />
         ) : (
-          <Text style={{ color: 'white', fontSize: 16, fontWeight: '600', textAlign: 'center' }}>
+          <Text style={{ color: theme.background, fontSize: 16, fontWeight: '700', textAlign: 'center' }}>
             Logout
           </Text>
         )}
