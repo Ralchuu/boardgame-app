@@ -60,7 +60,8 @@ const server = http.createServer(async (req, res) => {
         return
       }
 
-      const upstream = await forwardJson(`${searchUrl}?term=${encodeURIComponent(query.trim())}&l=en&cc=us`)
+      // Request localized prices using Finland country code (EUR)
+      const upstream = await forwardJson(`${searchUrl}?term=${encodeURIComponent(query.trim())}&l=en&cc=fi`)
       setCorsHeaders(res)
       res.writeHead(upstream.status, { 'Content-Type': upstream.contentType })
       res.end(upstream.body)
@@ -75,7 +76,8 @@ const server = http.createServer(async (req, res) => {
         return
       }
 
-      const upstream = await forwardJson(`${detailsUrl}?appids=${appid}&l=en&cc=us`)
+      // Request localized prices using Finland country code (EUR)
+      const upstream = await forwardJson(`${detailsUrl}?appids=${appid}&l=en&cc=fi`)
       setCorsHeaders(res)
       res.writeHead(upstream.status, { 'Content-Type': upstream.contentType })
       res.end(upstream.body)
