@@ -123,7 +123,7 @@ Opin että dark mode on helpompi toteuttaa, jos värit on alusta asti keskitetty
 
 ---
 
-## Safe area, status bar ja mobiilin erityispiirteet
+## Mobiilinäkymän hienosäätö
 
 Osa sisällöstä meni liian lähelle ylä- tai alareunaa. Tab bar, status bar ja laitteen omat navigointialueet vaikuttivat siihen, mihin sisältö asettuu.
 
@@ -133,7 +133,7 @@ Dark modeen liittyvä valkoinen välähdys siirtymissä oli hyvä oppimiskokemus
 
 ---
 
-# Asiat joissa kehitin osaamista
+## Asiat joissa kehitin osaamista
 
 Projektin aikana opin uutta näistä:
 
