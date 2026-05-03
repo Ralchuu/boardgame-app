@@ -29,11 +29,3 @@ This app was built as a final project for Haaga-Helia's mobile programming cours
 - Steam Store API
 - react-native-safe-area-context
 
-## Current Status
-
-Implemented:
-
-- search + debouncing
-- game detail page and back navigation
-- favorites and recommendations
-- theme-aware UI and dark mode transition fixes
