@@ -75,7 +75,7 @@ export default function HomeScreen() {
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text }}>Steam Finder</Text>
             <Text style={{ marginTop: 6, color: theme.mutedText, lineHeight: 20 }}>
-              Etsi pelejä Steamistä, tutki tietoja ja talleta omat suosikit.
+              Search Steam, view details, and save your favorites.
             </Text>
           </View>
         </View>
@@ -107,7 +107,7 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 24, gap: 12 }}
         ListEmptyComponent={
           !loading && !query.trim() ? (
-            <Text style={{ color: theme.mutedText }}>Kirjoita nimi ja hae esimerkiksi Hades tai Portal 2.</Text>
+            <Text style={{ color: theme.mutedText }}>Type a name to search for steam games.</Text>
           ) : null
         }
         renderItem={({ item }) => {
