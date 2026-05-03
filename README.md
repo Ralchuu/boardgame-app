@@ -19,6 +19,11 @@ This app was built as a final project for Haaga-Helia's mobile programming cours
 - Theme support (light/dark)
 - Consistent navigation to the detail page from all tabs
 
+## Local Steam proxy
+
+When running the app in a web browser, direct requests to the Steam Store API can be blocked by CORS. For local development and web builds this repository includes a proxy you can run which forwards requests to Steam and adds CORS headers.
+
+
 ## Technologies
 
 - Expo + React Native
