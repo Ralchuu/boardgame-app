@@ -3,12 +3,18 @@ import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useAuth } from '@/hooks/useAuth'
 import { router } from 'expo-router'
 import { useCallback, useState } from 'react'
-import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+}
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [localError, setLocalError] = useState<string | null>(null)
   const { signup, loading, error, clearError } = useAuth()
   const colorScheme = useColorScheme() ?? 'light'
@@ -17,8 +23,13 @@ export default function RegisterScreen() {
   const handleSignup = useCallback(async () => {
     setLocalError(null)
 
-    if (!email || !password || !confirmPassword) {
+    if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
       setLocalError('All fields are required')
+      return
+    }
+
+    if (!isValidEmail(email)) {
+      setLocalError('Please enter a valid email address.')
       return
     }
 
@@ -37,120 +48,224 @@ export default function RegisterScreen() {
       await signup(email, password)
       // Don't navigate immediately - let the auth state update trigger navigation
     } catch (err) {
-      console.log('Signup error:', err)
+      // Error text is handled by the auth context
     }
   }, [email, password, confirmPassword, signup, clearError])
 
   const displayError = localError || error
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: 20, justifyContent: 'center' }}>
-      <View
-        style={{
-          backgroundColor: theme.surface,
-          borderColor: theme.border,
-          borderWidth: 1,
-          borderRadius: 24,
-          padding: 20,
-        }}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: theme.background }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 24 }}
+        keyboardShouldPersistTaps="handled"
       >
-        <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text, marginBottom: 8, textAlign: 'center' }}>
-          Create Account
-        </Text>
-        <Text style={{ textAlign: 'center', color: theme.mutedText, marginBottom: 24, lineHeight: 20 }}>
-          Create an account to save favorites and use recommendations.
-        </Text>
-
-        {displayError && (
-          <View style={{ backgroundColor: theme.dangerSoft, padding: 12, borderRadius: 12, marginBottom: 16 }}>
-            <Text style={{ color: theme.danger, fontSize: 14 }}>{displayError}</Text>
-          </View>
-        )}
-
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor={theme.mutedText}
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          editable={!loading}
+        <View
           style={{
-            borderWidth: 1,
+            backgroundColor: theme.surface,
             borderColor: theme.border,
-            borderRadius: 14,
-            padding: 14,
-            fontSize: 16,
-            marginBottom: 12,
-            color: theme.text,
-            backgroundColor: theme.background,
-          }}
-        />
-
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor={theme.mutedText}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          editable={!loading}
-          style={{
             borderWidth: 1,
-            borderColor: theme.border,
-            borderRadius: 14,
-            padding: 14,
-            fontSize: 16,
-            marginBottom: 12,
-            color: theme.text,
-            backgroundColor: theme.background,
-          }}
-        />
-
-        <TextInput
-          placeholder="Confirm Password"
-          placeholderTextColor={theme.mutedText}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-          editable={!loading}
-          style={{
-            borderWidth: 1,
-            borderColor: theme.border,
-            borderRadius: 14,
-            padding: 14,
-            fontSize: 16,
-            marginBottom: 20,
-            color: theme.text,
-            backgroundColor: theme.background,
-          }}
-        />
-
-        <Pressable
-          onPress={handleSignup}
-          disabled={loading || !email || !password || !confirmPassword}
-          style={{
-            backgroundColor: theme.primary,
-            padding: 14,
-            borderRadius: 14,
-            marginBottom: 16,
-            opacity: loading || !email || !password || !confirmPassword ? 0.6 : 1,
+            borderRadius: 24,
+            padding: 20,
+            marginTop: -20,
           }}
         >
-          {loading ? (
-            <ActivityIndicator color={theme.background} />
-          ) : (
-            <Text style={{ color: theme.background, fontSize: 16, fontWeight: '700', textAlign: 'center' }}>
-              Sign Up
-            </Text>
-          )}
-        </Pressable>
-
-        <Pressable onPress={() => router.back()} disabled={loading}>
-          <Text style={{ textAlign: 'center', color: theme.primary, fontSize: 14 }}>
-            Already have an account? <Text style={{ fontWeight: '700' }}>Log in</Text>
+          <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text, marginBottom: 8, textAlign: 'center' }}>
+            Create Account
           </Text>
-        </Pressable>
-      </View>
-    </View>
+          <Text style={{ textAlign: 'center', color: theme.mutedText, marginBottom: 24, lineHeight: 20 }}>
+            Create an account to save favorites and use recommendations.
+          </Text>
+
+          {displayError && (
+            <View style={{ backgroundColor: theme.dangerSoft, padding: 12, borderRadius: 12, marginBottom: 16 }}>
+              <Text style={{ color: theme.danger, fontSize: 14 }}>{displayError}</Text>
+            </View>
+          )}
+
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor={theme.mutedText}
+            value={email}
+            onChangeText={(value) => {
+              setEmail(value)
+              setLocalError(null)
+              if (error) clearError()
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            editable={!loading}
+            style={{
+              borderWidth: 1,
+              borderColor: theme.border,
+              borderRadius: 14,
+              padding: 14,
+              fontSize: 16,
+              marginBottom: 12,
+              color: theme.text,
+              backgroundColor: theme.background,
+            }}
+          />
+
+          <View
+            key={`register-password-${showPassword ? 'text' : 'secure'}`}
+            style={{
+              position: 'relative',
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: theme.border,
+              borderRadius: 14,
+              marginBottom: 12,
+              backgroundColor: theme.background,
+            }}
+          >
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor={theme.mutedText}
+              value={password}
+              onChangeText={(value) => {
+                setPassword(value)
+                setLocalError(null)
+                if (error) clearError()
+              }}
+              secureTextEntry={false}
+              autoComplete="new-password"
+              textContentType="newPassword"
+              autoCorrect={false}
+              spellCheck={false}
+              autoCapitalize="none"
+              importantForAutofill="no"
+              editable={!loading}
+              style={{
+                flex: 1,
+                padding: 14,
+                fontSize: 16,
+                color: showPassword ? theme.text : 'transparent',
+              }}
+            />
+            {!showPassword && (
+              <Text
+                pointerEvents="none"
+                style={{
+                  position: 'absolute',
+                  left: 14,
+                  right: 76,
+                  paddingVertical: 14,
+                  fontSize: 16,
+                  color: theme.text,
+                }}
+              >
+                {'•'.repeat(password.length)}
+              </Text>
+            )}
+            <Pressable
+              onPress={() => setShowPassword((value) => !value)}
+              disabled={loading}
+              style={{
+                paddingHorizontal: 14,
+                paddingVertical: 12,
+              }}
+            >
+              <Text style={{ color: theme.primary, fontWeight: '700' }}>{showPassword ? 'Hide' : 'Show'}</Text>
+            </Pressable>
+          </View>
+
+          <View
+            key={`register-confirm-password-${showConfirmPassword ? 'text' : 'secure'}`}
+            style={{
+              position: 'relative',
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: theme.border,
+              borderRadius: 14,
+              marginBottom: 20,
+              backgroundColor: theme.background,
+            }}
+          >
+            <TextInput
+              placeholder="Confirm Password"
+              placeholderTextColor={theme.mutedText}
+              value={confirmPassword}
+              onChangeText={(value) => {
+                setConfirmPassword(value)
+                setLocalError(null)
+                if (error) clearError()
+              }}
+              secureTextEntry={false}
+              autoComplete="new-password"
+              textContentType="newPassword"
+              autoCorrect={false}
+              spellCheck={false}
+              autoCapitalize="none"
+              importantForAutofill="no"
+              editable={!loading}
+              style={{
+                flex: 1,
+                padding: 14,
+                fontSize: 16,
+                color: showConfirmPassword ? theme.text : 'transparent',
+              }}
+            />
+            {!showConfirmPassword && (
+              <Text
+                pointerEvents="none"
+                style={{
+                  position: 'absolute',
+                  left: 14,
+                  right: 76,
+                  paddingVertical: 14,
+                  fontSize: 16,
+                  color: theme.text,
+                }}
+              >
+                {'•'.repeat(confirmPassword.length)}
+              </Text>
+            )}
+            <Pressable
+              onPress={() => setShowConfirmPassword((value) => !value)}
+              disabled={loading}
+              style={{
+                paddingHorizontal: 14,
+                paddingVertical: 12,
+              }}
+            >
+              <Text style={{ color: theme.primary, fontWeight: '700' }}>{showConfirmPassword ? 'Hide' : 'Show'}</Text>
+            </Pressable>
+          </View>
+
+          <Pressable
+            onPress={handleSignup}
+            disabled={loading || !email || !password || !confirmPassword}
+            style={{
+              backgroundColor: theme.primary,
+              padding: 14,
+              borderRadius: 14,
+              marginBottom: 16,
+              opacity: loading || !email || !password || !confirmPassword ? 0.6 : 1,
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator color={theme.background} />
+            ) : (
+              <Text style={{ color: theme.background, fontSize: 16, fontWeight: '700', textAlign: 'center' }}>
+                Sign Up
+              </Text>
+            )}
+          </Pressable>
+
+          <Pressable onPress={() => router.back()} disabled={loading}>
+            <Text style={{ textAlign: 'center', color: theme.primary, fontSize: 14 }}>
+              Already have an account? <Text style={{ fontWeight: '700' }}>Log in</Text>
+            </Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
