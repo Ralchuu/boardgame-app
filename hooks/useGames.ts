@@ -26,7 +26,7 @@ export function useGames(query: string) {
         }
       } catch {
         if (!cancelled) {
-          setError('Steam-haku epäonnistui')
+          setError('Steam search failed')
         }
       } finally {
         if (!cancelled) {

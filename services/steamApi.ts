@@ -67,7 +67,8 @@ function buildSearchUrl(query: string) {
     return `${PROXY_BASE_URL}/search?q=${encodeURIComponent(query)}`
   }
 
-  return `${STORE_SEARCH_URL}?term=${encodeURIComponent(query)}&l=en&cc=us`
+  // Request localized prices using Finland country code (EUR)
+  return `${STORE_SEARCH_URL}?term=${encodeURIComponent(query)}&l=en&cc=fi`
 }
 
 function buildDetailsUrl(appid: number) {
@@ -75,7 +76,8 @@ function buildDetailsUrl(appid: number) {
     return `${PROXY_BASE_URL}/details?appid=${appid}`
   }
 
-  return `${APP_DETAILS_URL}?appids=${appid}&l=en&cc=us`
+  // Request localized prices using Finland country code (EUR)
+  return `${APP_DETAILS_URL}?appids=${appid}&l=en&cc=fi`
 }
 
 export async function searchSteamGames(query: string): Promise<SteamGame[]> {
