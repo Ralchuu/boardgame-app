@@ -38,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Haku',
+          title: 'Search',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="magnifyingglass" color={color} />
           ),
@@ -47,7 +47,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="games"
         options={{
-          title: 'Pelit',
+          title: 'Games',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="gamecontroller.fill" color={color} />
           ),
@@ -56,7 +56,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="favorites"
         options={{
-          title: 'Suosikit',
+          title: 'Favorites',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="star.fill" color={color} />
           ),
@@ -65,7 +65,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="recommendations"
         options={{
-          title: 'Suositukset',
+          title: 'Recommendations',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="sparkles" color={color} />
           ),
@@ -74,7 +74,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profiili',
+          title: 'Profile',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="person.fill" color={color} />
           ),

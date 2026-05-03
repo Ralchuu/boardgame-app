@@ -62,10 +62,10 @@ export default function LoginScreen() {
           }}
         >
           <Text style={{ fontSize: 28, fontWeight: '800', color: theme.text, marginBottom: 8, textAlign: 'center' }}>
-            Steam Games
+            Steam Finder
           </Text>
           <Text style={{ textAlign: 'center', color: theme.mutedText, marginBottom: 24, lineHeight: 20 }}>
-            Log in to sync favorites and get personalized recommendations.
+            Log in to add favorites and get personalized recommendations.
           </Text>
 
           {displayError && (

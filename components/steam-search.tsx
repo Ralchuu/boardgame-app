@@ -12,26 +12,26 @@ export default function SteamSearch() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Etsi Steam-pelejä</Text>
-      <Text style={styles.subtitle}>Hae pelejä nimellä ja lisää ne suosikkeihin.</Text>
+      <Text style={styles.title}>Search Steam games</Text>
+      <Text style={styles.subtitle}>Search games by name and add them to your favorites.</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Kirjoita pelin nimi"
+        placeholder="Type a game name"
         placeholderTextColor="#7A7A7A"
         value={query}
         onChangeText={setQuery}
       />
 
-      {loading ? <Text style={styles.helper}>Ladataan...</Text> : null}
+      {loading ? <Text style={styles.helper}>Loading...</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       {!loading && !error && query.trim() && games.length === 0 ? (
-        <Text style={styles.helper}>Ei tuloksia tällä haulla.</Text>
+        <Text style={styles.helper}>No results for this search.</Text>
       ) : null}
 
       {!query.trim() ? (
-        <Text style={styles.helper}>Kokeile esimerkiksi Elden Ring tai Hades.</Text>
+        <Text style={styles.helper}>Try searching for 'Elden Ring' or 'Hades'.</Text>
       ) : null}
 
       {games.map((item) => {
@@ -45,7 +45,7 @@ export default function SteamSearch() {
               {item.release_date ? <Text style={styles.cardMeta}>{item.release_date}</Text> : null}
               {item.price ? <Text style={styles.cardMeta}>{item.price}</Text> : null}
               <Pressable onPress={(e: any) => { e?.stopPropagation?.(); fav ? removeFavorite(item.appid) : addFavorite(item.appid) }}>
-                <Text style={styles.cardAction}>{fav ? 'Poista suosikeista' : 'Lisää suosikkeihin'}</Text>
+                <Text style={styles.cardAction}>{fav ? 'Remove from favorites' : 'Add to favorites'}</Text>
               </Pressable>
             </View>
           </Pressable>

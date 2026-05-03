@@ -64,13 +64,13 @@ export default function RecommendationsScreen() {
       <View style={{ backgroundColor: theme.surface, borderColor: theme.border, borderWidth: 1, borderRadius: 20, padding: 14, marginBottom: 12 }}>
         <Text style={{ fontSize: 20, fontWeight: '800', marginBottom: 6, color: theme.text }}>Recommendations</Text>
         <Text style={{ color: theme.mutedText, lineHeight: 20 }}>
-          Suositukset perustuvat suosikkeihisi ja niiden genreihin, tageihin ja kehittäjiin.
+          Recommendations are based on your favorites and their genres, tags and developers.
         </Text>
       </View>
 
       {!favorites.length ? (
         <Text style={{ marginBottom: 12, color: theme.mutedText }}>
-          Lisää muutama suosikki, niin suosittelen samankaltaisia pelejä niiden perusteella.
+          Add a few favorites and I'll recommend similar games based on them.
         </Text>
       ) : null}
 
@@ -81,7 +81,7 @@ export default function RecommendationsScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         ListEmptyComponent={
           <Text style={{ color: theme.mutedText }}>
-            En löytänyt vielä riittävästi samankaltaisia pelejä. Kokeile lisätä lisää suosikkeja.
+            I couldn't find enough similar games yet. Try adding more favorites.
           </Text>
         }
         renderItem={({ item }) => {
