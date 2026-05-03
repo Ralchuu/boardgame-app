@@ -23,7 +23,6 @@ This app was built as a final project for Haaga-Helia's mobile programming cours
 
 When running the app in a web browser, direct requests to the Steam Store API can be blocked by CORS. For local development and web builds this repository includes a proxy you can run which forwards requests to Steam and adds CORS headers.
 
-
 ## Technologies
 
 - Expo + React Native

@@ -111,6 +111,15 @@ Kukaan ei halua käyttää tälläistä sovellusta jossa suositukset ovat liian 
 
 ---
 
+## TypeScript ja null-arvojen käsittely
+
+Projektissa tuli vastaan myös TypeScriptiin liittyviä ongelmia. Esimerkiksi Steam API:sta haettu pelin detail-tieto saattoi olla `null`. Tämä aiheutti TypeScript-virheen.
+
+Ratkaisin ongelman lisäämällä tarkistuksen, joka poistaa tyhjät tulokset ennen kuin pelejä käsitellään.
+
+---
+
+
 ## Käyttöliittymän yhtenäistäminen
 
 Ensin sovellus toimi, mutta näytti huonolta koska käyttöliittymä ei ollut yhtenäinen.
