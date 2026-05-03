@@ -9,56 +9,170 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const genrePool = [
   'action',
-  'rpg',
-  'strategy',
-  'simulation',
   'adventure',
-  'indie',
-  'platformer',
-  'puzzle',
-  'survival',
-  'horror',
-  'shooter',
-  'roguelike',
   'casual',
-  'fantasy',
-  'sci-fi',
+  'indie',
+  'rpg',
+  'simulation',
+  'strategy',
 ]
 
-const modifierPool = [
-  'cooperative',
-  'multiplayer',
-  'open world',
-  'turn-based',
-  'real-time',
-  'narrative',
-  'pixel art',
-  'roguelike',
-  'indie',
+const broadSearchPool = [
+  'popular',
+  'top rated',
   'new',
   'free',
-  'most played',
-  'top rated',
+  'multiplayer',
+  'singleplayer',
+  'open world',
+  'story',
+  'co-op',
+  'adventure',
+  'action',
+  'indie',
+  'strategy',
+  'simulation',
+  'fantasy',
+  'sci-fi',
+  'survival',
+  'horror',
+  'puzzle',
+  'platformer',
 ]
 
-function generateDiverseQueries(count: number = 6): string[] {
+const genreAppIds: Record<string, number[]> = {
+  action: [
+    730,
+    570,
+    271590,
+    1245620,
+    1174180,
+    292030,
+    1091500,
+    367520,
+    620,
+    252490,
+    381210,
+    892970,
+  ],
+  adventure: [
+    292030,
+    1174180,
+    367520,
+    413150,
+    105600,
+    268910,
+    391540,
+    1086940,
+    1091500,
+    1245620,
+    620,
+    70,
+  ],
+  casual: [
+    413150,
+    105600,
+    431960,
+    268910,
+    391540,
+    322330,
+    4000,
+    620,
+    632360,
+    1145360,
+  ],
+  indie: [
+    367520,
+    413150,
+    105600,
+    268910,
+    391540,
+    322330,
+    1145360,
+    632360,
+    504230,
+    250900,
+    588650,
+    646570,
+  ],
+  rpg: [
+    292030,
+    1091500,
+    1245620,
+    1086940,
+    489830,
+    377160,
+    1151340,
+    413150,
+    367500,
+    236850,
+    12210,
+    391540,
+  ],
+  simulation: [
+    413150,
+    227300,
+    255710,
+    431960,
+    440900,
+    892970,
+    582010,
+    281990,
+    236850,
+    394360,
+    427520,
+    294100,
+  ],
+  strategy: [
+    570,
+    289070,
+    281990,
+    394360,
+    236850,
+    427520,
+    294100,
+    646570,
+    322330,
+    221100,
+    440900,
+    105600,
+  ],
+}
+
+function isSteamGameDetails(game: SteamGameDetails | null): game is SteamGameDetails {
+  return game !== null
+}
+
+function normalizeText(value: string) {
+  return value.trim().toLowerCase()
+}
+
+function matchesGenre(game: SteamGameDetails, selectedGenre: string | null) {
+  if (!selectedGenre) {
+    return true
+  }
+
+  const target = normalizeText(selectedGenre)
+
+  return game.genres?.some((genre) => {
+    const description = normalizeText(genre.description)
+    return description === target
+  }) ?? false
+}
+
+function generateDiverseQueries(count: number = 8): string[] {
   const queries: string[] = []
-  
-  // Pick random single genres
-  for (let i = 0; i < Math.floor(count * 0.3); i++) {
-    const genre = genrePool[Math.floor(Math.random() * genrePool.length)]
-    queries.push(genre)
+
+  for (let i = 0; i < count; i++) {
+    const query = broadSearchPool[Math.floor(Math.random() * broadSearchPool.length)]
+    queries.push(query)
   }
-  
-  // Pick combined genre + modifier queries for more diversity
-  for (let i = queries.length; i < count; i++) {
-    const genre = genrePool[Math.floor(Math.random() * genrePool.length)]
-    const modifier = modifierPool[Math.floor(Math.random() * modifierPool.length)]
-    queries.push(`${genre} ${modifier}`)
-  }
-  
-  // Shuffle to randomize order
-  return queries.sort(() => Math.random() - 0.5)
+
+  return Array.from(new Set(queries)).sort(() => Math.random() - 0.5)
+}
+
+function shuffleNumbers(values: number[]) {
+  return [...values].sort(() => Math.random() - 0.5)
 }
 
 export default function GamesScreen() {
@@ -72,35 +186,49 @@ export default function GamesScreen() {
   const theme = Colors[colorScheme]
   const insets = useSafeAreaInsets()
 
-  const loadGames = useCallback(async (genre: string | null = selectedGenre) => {
-    let queries: string[]
-    
-    if (genre) {
-      // If a genre is selected, generate more queries to get more results
-      queries = []
-      for (let i = 0; i < 15; i++) {
-        const modifier = modifierPool[Math.floor(Math.random() * modifierPool.length)]
-        queries.push(`${genre} ${modifier}`)
+  const loadGames = useCallback(
+    async (genre: string | null = selectedGenre) => {
+      if (genre) {
+        // Use a broad sample of games and filter by the actual Steam genre metadata.
+        // This keeps the result pool independent from title text.
+        const queries = generateDiverseQueries(12)
+        const searchResults = await Promise.all(queries.map(searchSteamGames))
+
+        const candidateIds = Array.from(
+          new Set(
+            searchResults
+              .flat()
+              .filter((item) => item.appid)
+              .map((item) => item.appid),
+          ),
+        ).slice(0, 120)
+
+        const detailedResults = await Promise.all(candidateIds.map(getSteamGameDetails))
+
+        return detailedResults
+          .filter(isSteamGameDetails)
+          .filter((game) => matchesGenre(game, genre))
       }
-      queries = queries.sort(() => Math.random() - 0.5)
-    } else {
-      // Otherwise, generate diverse queries from all genres
-      queries = generateDiverseQueries(6)
-    }
 
-    const searchResults = await Promise.all(queries.map(searchSteamGames))
-    const candidateIds = Array.from(
-      new Set(
-        searchResults
-          .flat()
-          .filter((item) => item.appid)
-          .map((item) => item.appid),
-      ),
-    ).slice(0, 60)
+      const queries = generateDiverseQueries(8)
+      const searchResults = await Promise.all(queries.map(searchSteamGames))
 
-    const detailedResults = await Promise.all(candidateIds.map(getSteamGameDetails))
-    return detailedResults.filter(Boolean) as SteamGameDetails[]
-  }, [selectedGenre])
+      const candidateIds = Array.from(
+        new Set(
+          searchResults
+            .flat()
+            .filter((item) => item.appid)
+            .map((item) => item.appid),
+        ),
+      ).slice(0, 80)
+
+      const detailedResults = await Promise.all(candidateIds.map(getSteamGameDetails))
+
+      return detailedResults
+        .filter(isSteamGameDetails)
+    },
+    [selectedGenre],
+  )
 
   useEffect(() => {
     let active = true
@@ -145,6 +273,7 @@ export default function GamesScreen() {
   const handleGenreSelect = async (genre: string | null) => {
     setSelectedGenre(genre)
     setLoading(true)
+
     try {
       const data = await loadGames(genre)
       setGames(data)
@@ -174,6 +303,7 @@ export default function GamesScreen() {
       ListHeaderComponent={
         <View style={{ marginBottom: 16, backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border, borderRadius: 20, padding: 14 }}>
           <Text style={{ color: theme.text, fontSize: 16, fontWeight: '700', marginBottom: 10 }}>Select Genre</Text>
+
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }}>
             <Pressable
               onPress={() => handleGenreSelect(null)}
@@ -189,6 +319,7 @@ export default function GamesScreen() {
                 All
               </Text>
             </Pressable>
+
             {genrePool.map((genre) => (
               <Pressable
                 key={genre}
@@ -202,7 +333,7 @@ export default function GamesScreen() {
                 }}
               >
                 <Text style={{ color: selectedGenre === genre ? theme.background : theme.text, fontWeight: '700' }}>
-                  {genre.charAt(0).toUpperCase() + genre.slice(1)}
+                  {genre.toUpperCase()}
                 </Text>
               </Pressable>
             ))}
@@ -210,13 +341,16 @@ export default function GamesScreen() {
         </View>
       }
       ListEmptyComponent={
-        <Text style={{ color: theme.mutedText }}>Pull down to load a new set of Steam games</Text>
+        <Text style={{ color: theme.mutedText }}>No games found for this genre. Pull down to refresh.</Text>
       }
       renderItem={({ item }) => {
         const fav = isFavorite(item.steam_appid)
 
         return (
-          <Pressable onPress={() => router.push({ pathname: '/game', params: { appid: String(item.steam_appid) } })} style={{ marginBottom: 16 }}>
+          <Pressable
+            onPress={() => router.push({ pathname: '/game', params: { appid: String(item.steam_appid) } })}
+            style={{ marginBottom: 16 }}
+          >
             <View style={{ padding: 14, borderWidth: 1, borderColor: theme.border, borderRadius: 18, backgroundColor: theme.surface }}>
               {item.header_image && (
                 <Image
@@ -229,10 +363,21 @@ export default function GamesScreen() {
               <Text style={{ color: theme.text, fontSize: 18, fontWeight: '800', marginTop: 8 }}>
                 {item.name}
               </Text>
-              {item.release_date?.date ? <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date.date}</Text> : null}
+
+              {item.genres?.length ? (
+                <Text style={{ color: theme.mutedText, marginTop: 4 }}>
+                  {item.genres.map((genre) => genre.description).join(', ')}
+                </Text>
+              ) : null}
+
+              {item.release_date?.date ? (
+                <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.release_date.date}</Text>
+              ) : null}
+
               {item.price_overview?.final_formatted ? (
                 <Text style={{ color: theme.mutedText, marginTop: 4 }}>{item.price_overview.final_formatted}</Text>
               ) : null}
+
               {item.short_description ? (
                 <Text style={{ color: theme.mutedText, marginTop: 8, lineHeight: 20 }}>{item.short_description}</Text>
               ) : null}
