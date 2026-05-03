@@ -70,7 +70,7 @@ export default function RecommendationsScreen() {
 
       {!favorites.length ? (
         <Text style={{ marginBottom: 12, color: theme.mutedText }}>
-          Add a few favorites and I'll recommend similar games based on them.
+          Add a few favorites to get similar games recommended based on them.
         </Text>
       ) : null}
 
@@ -81,8 +81,8 @@ export default function RecommendationsScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         ListEmptyComponent={
           <Text style={{ color: theme.mutedText }}>
-            I couldn't find enough similar games yet. Try adding more favorites.
-          </Text>
+              Couldn't find enough similar games yet. Try adding more favorites.
+            </Text>
         }
         renderItem={({ item }) => {
           const fav = isFavorite(item.steam_appid)

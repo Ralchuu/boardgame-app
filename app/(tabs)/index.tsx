@@ -81,22 +81,37 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <TextInput
-        value={query}
-        onChangeText={setQuery}
-        placeholder="Search Steam games..."
-        placeholderTextColor={theme.mutedText}
-        selectionColor={theme.tint}
-        style={{
-          borderWidth: 1,
-          borderColor: theme.border,
-          color: theme.text,
-          backgroundColor: theme.surface,
-          marginBottom: 4,
-          padding: 14,
-          borderRadius: 16,
-        }}
-      />
+      <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: theme.border, borderRadius: 16, backgroundColor: theme.surface }}>
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Search Steam games..."
+          placeholderTextColor={theme.mutedText}
+          selectionColor={theme.tint}
+          style={{
+            flex: 1,
+            color: theme.text,
+            marginBottom: 0,
+            padding: 14,
+            fontSize: 16,
+          }}
+        />
+        {query.trim() && (
+          <Pressable 
+            onPress={() => setQuery('')}
+            style={{
+              paddingRight: 14,
+              paddingLeft: 8,
+              paddingVertical: 12,
+              justifyContent: 'center',
+              alignItems: 'center',
+              minWidth: 40,
+            }}
+          >
+            <Text style={{ fontSize: 24, fontWeight: '700', color: theme.primary }}>×</Text>
+          </Pressable>
+        )}
+      </View>
 
       {loading && <ActivityIndicator color={theme.primary} />}
       {error ? <Text style={{ color: theme.danger }}>{error}</Text> : null}
