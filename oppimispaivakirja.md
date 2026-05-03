@@ -161,7 +161,11 @@ Miettisin API-ratkaisua aikaisemmin.
 
 ## Pohdintaa
 
-Vaikka aika kävi tiukille enkä ehtinyt toteuttaa kaikkea mitä halusin, niin sovellus on kuitenkin käytettävä ja toimiva kokonaisuus joten olen siihen ihan tyytyväinen. Kokonaisen käyttökelpoisen mobiilisovelluksen tekeminen oli hyvä oppikokemus. Hyvä sovellus syntyy siitä että kaikki ominaisuudet toimii yhdessä ja käyttöliittymä tuntuu yhtenäiseltä ja loogiselta. Suurimmat haasteet ei ollu yksittäisiä virheitä, vaan kokonaisuuden liittyviä asioita.
+Vaikka aika kävi tiukille enkä ehtinyt toteuttaa kaikkea mitä halusin, niin sovellus on kuitenkin käytettävä ja toimiva kokonaisuus joten olen siihen melko tyytyväinen.
 
-Projektin aikana huomasin, että kannattaa rakentaa ensin toimiva perusversio ja parantaa sitä vaiheittain. Aluks yritin välillä ratkaista liian monta asiaa kerralla, mikä teki virheiden selvittämisestä vaikeampaa. Kun aloin pilkkoa ongelmia pienempiin osiin, eteneminen helpottui. Tuli myös huomattuu että pienet yksityiskohdat vaikuttaa paljon siihen että tuntuuko sovellus viimeistellyltä vai keskeneräiseltä.
+Kokonaisen käyttökelpoisen mobiilisovelluksen tekeminen oli hyvä oppikokemus. Hyvä sovellus syntyy siitä että kaikki ominaisuudet toimii yhdessä ja käyttöliittymä tuntuu yhtenäiseltä ja loogiselta. Suurimmat haasteet ei ollu yksittäisiä virheitä, vaan kokonaisuuden liittyviä asioita.
+
+Projektin aikana huomasin, että kannattaa rakentaa ensin toimiva perusversio ja parantaa sitä vaiheittain.
+
+Aluksi yritin välillä ratkaista liian monta asiaa kerralla, mikä teki virheiden selvittämisestä vaikeampaa. Kun aloin pilkkoa ongelmia pienempiin osiin, eteneminen helpottui. Tuli myös huomattua, että pienet yksityiskohdat vaikuttaa paljon siihen, että tuntuuko sovellus viimeistellyltä vai keskeneräiseltä.
 
