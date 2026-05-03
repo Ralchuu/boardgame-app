@@ -133,6 +133,20 @@ Dark modeen liittyvä valkoinen välähdys siirtymissä oli hyvä oppimiskokemus
 
 ---
 
+# Asiat joissa kehitin osaamista
+
+Projektin aikana opin uutta näistä:
+
+- Expo Routerin käyttöä tab- ja stack-navigaatiossa
+- React Native -näkymien rakentamista usealla ruudulla
+- Firebase Authenticationin ja Realtime Databasen käyttöä
+- API-datan hakemista, muokkaamista ja suodattamista
+- Custom hookkien tekemistä ja käyttämistä
+- Light/dark mode -teeman rakentamista
+- Safe area -ongelmien ratkaisemista
+- Näppäimistön huomioimista lomakenäkymissä
+- Käyttäjäystävällisempää virheenkäsittelyä
+
 ## Jos tekisin projektin uudelleen
 
 Suunnittelisin käyttöliittymän ja komponenttirakenteen tarkemmin jo alussa. 
@@ -146,18 +160,6 @@ Miettisin API-ratkaisua aikaisemmin.
 ---
 
 ## Pohdintaa
-
-Projektin aikana opin uutta näistä:
-
-- Expo Routerin käyttöä tab- ja stack-navigaatiossa
-- React Native -näkymien rakentamista usealla ruudulla
-- Firebase Authenticationin ja Realtime Databasen käyttöä
-- API-datan hakemista, muokkaamista ja suodattamista
-- Custom hookkien tekemistä ja käyttämistä
-- Light/dark mode -teeman rakentamista
-- Safe area -ongelmien ratkaisemista
-- Näppäimistön huomioimista lomakenäkymissä
-- Käyttäjäystävällisempää virheenkäsittelyä
 
 Vaikka aika kävi tiukille enkä ehtinyt toteuttaa kaikkea mitä halusin, niin sovellus on kuitenkin käytettävä ja toimiva kokonaisuus joten olen siihen ihan tyytyväinen. Kokonaisen käyttökelpoisen mobiilisovelluksen tekeminen oli hyvä oppikokemus. Hyvä sovellus syntyy siitä että kaikki ominaisuudet toimii yhdessä ja käyttöliittymä tuntuu yhtenäiseltä ja loogiselta. Suurimmat haasteet ei ollu yksittäisiä virheitä, vaan kokonaisuuden liittyviä asioita.
 
