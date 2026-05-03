@@ -22,7 +22,7 @@ Sovelluksessa käytin seuraavia teknologioita:
 - Firebase Authentication 
 - Firebase Realtime Database 
 - Steam Store API 
-- Custom hookeja 
+- Custom hookit
 
 Sovelluksessa on useita näkymiä: haku, pelilista, suosikit, suositukset, profiili, kirjautuminen, rekisteröinti ja pelin detail-näkymä. Näkymien välillä siirrytään Expo Routerin avulla.
 
@@ -40,7 +40,7 @@ Opin että jos sama elementti toimii eri näkymissä eri tavalla, sovellus tuntu
 
 ## Steam API ja datan käsittely
 
-Haku oli aluksi melko ongelmatonta toteuttaa, mutta huomasin pian että se ei kyllä toimi halutulla tavalla.
+Haku oli aluksi melko suoraviivaista toteuttaa, mutta huomasin pian että se ei kyllä toiminut halutulla tavalla.
 
 Esimerkiksi jos käyttäjä valitsi genren “RPG”, ensimmäinen toteutus haki pelejä hakusanalla `rpg`. Ongelma oli se että Steam palautti pelejä joiden nimessä luki “RPG”, vaikka ne eivät välttämättä olleet oikeasti RPG-genren pelejä. 
 
@@ -80,7 +80,7 @@ Opin myös, miksi transaktiot ovat hyödyllisiä. Firebaseen tallennettaessa kä
 
 ## Custom hookit
 
-Käytin näitä custom hookkeja:
+Käytin mm. näitä custom hookkeja:
 
 - `useGames` pelien hakemiseen
 - `useFavorites` suosikkien hallintaan
@@ -146,15 +146,15 @@ Dark modeen liittyvä valkoinen välähdys siirtymissä oli hyvä oppimiskokemus
 
 Projektin aikana opin uutta näistä:
 
-- Expo Routerin käyttöä tab- ja stack-navigaatiossa
-- React Native -näkymien rakentamista usealla ruudulla
-- Firebase Authenticationin ja Realtime Databasen käyttöä
-- API-datan hakemista, muokkaamista ja suodattamista
-- Custom hookkien tekemistä ja käyttämistä
-- Light/dark mode -teeman rakentamista
-- Safe area -ongelmien ratkaisemista
-- Näppäimistön huomioimista lomakenäkymissä
-- Käyttäjäystävällisempää virheenkäsittelyä
+- Expo Routerin käyttö tab- ja stack-navigaatiossa
+- React Native -näkymien rakentaminen usealla ruudulla
+- Firebase Authenticationin ja Realtime Databasen käyttö
+- API-datan hakeminen, muokkaaminen ja suodattaminen
+- Custom hookkien tekeminen ja käyttäminen
+- Light/dark mode -teeman rakentaminen
+- Safe area -ongelmien ratkaiseminen
+- Näppäimistön huomioiminen lomakenäkymissä
+- Käyttäjäystävällinen virheenkäsittely
 
 ## Jos tekisin projektin uudelleen
 
@@ -164,7 +164,7 @@ Tekisin enemmän uudelleenkäytettäviä komponentteja.
 
 Kirjoittaisin ainakin joitain testejä apufunktioille ja hookeille.
 
-Miettisin API-ratkaisua aikaisemmin.
+Selvittäisin API-asiat aikaisemmin.
 
 ---
 
