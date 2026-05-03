@@ -46,6 +46,13 @@ Hakusivu tuntui aluksi hieman tyhjältä, joten lisäsin siihen teemaan sopivan 
 
 Samalla tulin siihen johtopäätökseen, että sovellukselle kannattaa tehdä oma logo. Yksinkertainen ja tunnistettava logo tukee koko sovelluksen ulkoasua ja auttaa myös app iconin ja splash screenin suunnittelussa.
 
+### 6. Salasanakenttien validaatiot ja KeyboardAvoidView
+
+  - Korjattiin salasanakenttien piilotus-ongelma Androidilla käyttämällä bullet-overlay -tekniikkaa, jotta yksittäinen kirjain ei vilahtaisi näkyviin kirjoitettaessa.
+  - Lisättiin `Show`/`Hide`-toiminnot salasanakenttiin sekä remontoitiin kenttien renderöinti niin, että piilotus on luotettavampi eri laitteilla.
+  - Tehtiin login- ja register-näkymistä keyboard-safe lisäämällä `KeyboardAvoidingView` + `ScrollView`, jolloin näppäimistö ei peitä kenttiä pienemmillä näytöillä.
+ 
+
 ## Kohdatut ongelmat ja ratkaisut
 
 ### Ongelma 1: Steam API ja web-käyttö
@@ -77,6 +84,18 @@ Androidilla tabien ikonit ja hakusivun otsikko olivat liian lähellä puhelimen 
 Hakusivun ensimmäinen versio oli toimiva mutta visuaalisesti vähän orpo.
 
 **Ratkaisu:** Lisäsin etusivulle esittelyosion, ikonin ja taustamuotoja sekä harkitsin sovellukselle omaa logoa. Näin hakusivusta tuli selkeämpi ja paremmin viimeistelty.
+
+### Ongelma 6: Salasanan vilahtelu kirjoitettaessa
+
+**Kuvaus:** Android-laitteilla salasanakenttä saattoi hetkellisesti näyttää juuri kirjoitetun kirjaimen, vaikka kenttä oli asetettu piilotetuksi.
+
+**Ratkaisu:** Piilotetaan syöte asettamalla tekstin väri `transparent` ja piirretään päälle bullet-merkit (`'•'`) `Text`-komponentilla. Lisättiin myös `Show`/`Hide`-nappi turvalliseen paljastukseen.
+
+### Ongelma 7: Näppäimistö peitti rekisteröintinäkymän
+
+**Kuvaus:** Pienillä näytöillä mobiilin näppäimistö peitti rekisteröintilomakkeen toisen salasanakentän.
+
+**Ratkaisu:** Käytettiin `KeyboardAvoidingView` + `ScrollView`-rakennetta ja asetettiin `keyboardShouldPersistTaps="handled"`, jotta lomake pysyy saavutettavana ja käyttäjä voi skrollata kenttien yli.
 
 ## Yhteenveto
 
@@ -112,4 +131,3 @@ Ratkaisin tämän käyttämällä workspace-kohtaista TypeScript-versiota ja raj
 Projektin aikana sovellus kehittyi perustoimivasta versiosta huomattavasti valmiimmaksi kokonaisuudeksi. Isoimmat parannukset tulivat käyttöliittymän yhtenäistämisestä, navigoinnin selkeyttämisestä ja siitä, että ongelmia korjattiin käytännön testauksen perusteella laiteympäristössä.
 
 Oma fiilis lopputuloksesta on hyvä: sovellus on nyt teknisesti vakaampi, visuaalisesti yhtenäisempi ja käyttäjän näkökulmasta loogisempi käyttää. Samalla opin paljon siitä, miten pienetkin mobiili-UI:n yksityiskohdat vaikuttavat siihen, näyttääkö sovellus keskeneräiseltä vai viimeistellyltä.
-

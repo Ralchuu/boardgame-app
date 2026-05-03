@@ -1,13 +1,44 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
-    User,
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    signInWithEmailAndPassword,
-    signOut,
+  User,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth'
 import React, { ReactNode, createContext, useEffect, useState } from 'react'
 import { auth } from './firebase'
+
+function getAuthErrorMessage(error: unknown, fallback: string) {
+  if (!(error instanceof Error)) {
+    return fallback
+  }
+
+  const code = (error as { code?: string }).code ?? ''
+
+  switch (code) {
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.'
+    case 'auth/missing-password':
+      return 'Please enter your password.'
+    case 'auth/weak-password':
+      return 'Password must be at least 6 characters.'
+    case 'auth/email-already-in-use':
+      return 'This email is already in use.'
+    case 'auth/user-not-found':
+      return 'No account found for this email.'
+    case 'auth/wrong-password':
+      return 'Incorrect password.'
+    case 'auth/invalid-credential':
+      return 'Invalid email or password.'
+    case 'auth/too-many-requests':
+      return 'Too many attempts. Try again later.'
+    case 'auth/network-request-failed':
+      return 'Network error. Check your connection and try again.'
+    default:
+      return fallback
+  }
+}
 
 export interface AuthContextType {
   user: User | null
@@ -48,12 +79,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setError(null)
       setLoading(true)
-      console.log('Signing up with:', email)
       const result = await createUserWithEmailAndPassword(auth, email, password)
-      console.log('Signup successful:', result.user.uid)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to sign up'
-      console.error('Signup error:', message)
+      const message = getAuthErrorMessage(err, 'Failed to sign up')
       setError(message)
       throw err
     } finally {
@@ -65,12 +93,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setError(null)
       setLoading(true)
-      console.log('Logging in with:', email)
       const result = await signInWithEmailAndPassword(auth, email, password)
-      console.log('Login successful:', result.user.uid)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to log in'
-      console.error('Login error:', message)
+      const message = getAuthErrorMessage(err, 'Failed to log in')
       setError(message)
       throw err
     } finally {
@@ -83,7 +108,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null)
       await signOut(auth)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to log out'
+      const message = getAuthErrorMessage(err, 'Failed to log out')
       setError(message)
       throw err
     }
